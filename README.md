@@ -17,7 +17,7 @@ The backend (hosted on **Render**) serves project data via a REST API, while the
 - 🧩 **Express.js** REST API
 - 📡 `/api/projects` endpoint returns portfolio projects (JSON)
 - 🌍 Hosted on **Render**
-- expressjsonapi-1.onrender.com
+-
 - 🔐 CORS enabled for frontend origin
 
 ---
