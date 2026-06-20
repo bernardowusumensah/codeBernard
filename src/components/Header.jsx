@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navigation from './Navigation';
 import ThemeToggle from './ThemeToggle';
 
@@ -6,9 +7,9 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <a href="/" className="logo">
+        <Link to="/" className="logo">
           codeBernard
-        </a>
+        </Link>
         <div className="header-right">
           <Navigation />
           <ThemeToggle />

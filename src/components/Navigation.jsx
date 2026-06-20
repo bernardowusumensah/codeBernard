@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
     { label: 'Home', href: '/', isRoute: true },
@@ -26,7 +27,7 @@ const Navigation = () => {
     } else {
       // Scroll to section on current page
       // First check if we're on home page, if not navigate to home first
-      if (window.location.pathname !== '/') {
+      if (location.pathname !== '/') {
         navigate('/');
         // Wait for navigation then scroll
         setTimeout(() => {

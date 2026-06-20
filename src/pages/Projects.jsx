@@ -1,36 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Static fallback data (backup if API fails)
-const fallbackProjects = [
-  {
-    "_id": "68794a5bc5e112180e816f36",
-    "title": "Peer to Peer Library",
-    "description": "A community base book sharing platform for ease of access.",
-    "githubLink": "https://github.com/bernardowusumensah/p2p",
-    "liveLink": "https://bernardowusumensah.github.io/p2p/",
-    "imageUrl": "https://via.placeholder.com/300x200/667eea/white?text=P2P+Library",
-    "technologies": ["HTML", "CSS", "JavaScript", "LocalStorage"]
-  },
-  {
-    "_id": "6879490dc5e112180e816f31",
-    "title": "City Weather Condition",
-    "description": "A web base app that instantly predicts the weather conditions of two major provinces in Canada",
-    "githubLink": "https://github.com/bernardowusumensah/openweather",
-    "liveLink": "https://bernardowusumensah.github.io/openweather/",
-    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTlNhIma5xw9N7pGiDy8cMz8S5cVj7ggZWxnioJYdKe793xGwcICtCf0ESXwUrkr77J8&usqp=CAU",
-    "technologies": ["JavaScript", "DOM manipulation", "XMLHttpRequest()", "OpenWeatherMap API"]
-  },
-  {
-    "_id": "68794726c5e112180e816f21",
-    "title": "Deployment Prank",
-    "description": "A useless website that blends fun and creativity for develops yet to deploy an application but realises the code isn't truly working",
-    "githubLink": "https://github.com/bernardowusumensah/deploymentPrank",
-    "liveLink": "https://bernardowusumensah.github.io/deploymentPrank/",
-    "imageUrl": "https://dev-tester.com/content/images/2022/11/facebook_cover_feel_free_to_deploy_on_friday.png",
-    "technologies": ["HTML", "CSS", "Javascript"]
-  }
-];
-
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,50 +7,26 @@ const Projects = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
+      const apiUrl = 'https://expressjsonapi-1.onrender.com/api/projects';
+      
       try {
         console.log('Fetching projects from API...');
         
-        // Try direct API call first
-        try {
-          const response = await fetch('https://expressjsonapi-1.onrender.com/api/projects', {
-            mode: 'cors'
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('✅ API call successful:', data);
-            setProjects(data);
-            return;
-          }
-        } catch (corsError) {
-          console.log('⚠️ Direct API call failed (CORS):', corsError.message);
+        // Use CodeTabs CORS proxy which seems more reliable for this API
+        const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
+        const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
         }
         
-        // Try CORS proxy as fallback
-        try {
-          console.log('Trying CORS proxy...');
-          const proxyUrl = 'https://api.allorigins.win/get?url=';
-          const targetUrl = encodeURIComponent('https://expressjsonapi-1.onrender.com/api/projects');
-          
-          const response = await fetch(proxyUrl + targetUrl);
-          if (response.ok) {
-            const result = await response.json();
-            const data = JSON.parse(result.contents);
-            console.log('✅ CORS proxy successful:', data);
-            setProjects(data);
-            return;
-          }
-        } catch (proxyError) {
-          console.log('⚠️ CORS proxy failed:', proxyError.message);
-        }
-        
-        // Use fallback data if all else fails
-        console.log('📦 Using fallback data...');
-        setProjects(fallbackProjects);
+        const data = await response.json();
+        console.log('✅ Projects loaded successfully:', data);
+        setProjects(data);
         
       } catch (err) {
-        console.error('❌ All methods failed, using fallback:', err);
-        setProjects(fallbackProjects);
+        console.error('❌ Failed to fetch projects:', err);
+        setError(err.message || 'Failed to load projects. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -89,6 +34,28 @@ const Projects = () => {
 
     fetchProjects();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="projects-page">
+        <div className="loading-container" style={{ textAlign: 'center', padding: '50px' }}>
+          <h2>Loading Projects...</h2>
+          <p>Please wait while we wake up the server (this may take up to a minute).</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="projects-page">
+        <div className="error-container" style={{ textAlign: 'center', padding: '50px', color: 'red' }}>
+          <h2>Error Loading Projects</h2>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="projects-page">
