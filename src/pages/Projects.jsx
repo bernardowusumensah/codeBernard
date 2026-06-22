@@ -10,11 +10,10 @@ const Projects = () => {
       const apiUrl = 'https://expressjsonapi-1.onrender.com/api/projects';
       
       try {
-        console.log('Fetching projects from API...');
+        console.log('Fetching projects directly from live API...');
         
-        // Use CodeTabs CORS proxy which seems more reliable for this API
-        const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-        const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+        // Fetching directly from your live Render URL now that CORS is active
+        const response = await fetch(apiUrl);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
@@ -70,76 +69,57 @@ const Projects = () => {
 
       <section className="projects-main">
         <div className="projects-container">
-          {loading ? (
-            <div className="loading-placeholder">
-              <h3>🚀 Loading Projects...</h3>
-              <p>Fetching latest projects from the server...</p>
-              <button onClick={() => window.location.reload()}>Retry</button>
-            </div>
-          ) : error ? (
-            <div className="error-placeholder">
-              <h3>❌ Error Loading Projects</h3>
-              <p>Failed to load projects: {error}</p>
-              <button onClick={() => window.location.reload()}>Retry</button>
-              <p style={{marginTop: '1rem', fontSize: '0.9rem', color: '#666'}}>
-                Check the browser console for more details.
-              </p>
-            </div>
-          ) : (
-            <>
-              <div className="section-header">
-                <h2>Featured Projects</h2>
-                <p>Here are some of my featured projects built with modern technologies</p>
-              </div>
-              
-              <div className="projects-grid">
-                {projects.map((project) => (
-                  <div key={project._id} className="project-card">
-                    <div className="project-image">
-                      <img 
-                        src={project.imageUrl} 
-                        alt={project.title}
-                        onError={(e) => {
-                          e.target.src = 'https://via.placeholder.com/300x200?text=Project+Image';
-                        }}
-                      />
-                    </div>
-                    <div className="project-content">
-                      <h3>{project.title}</h3>
-                      <p className="project-description">{project.description}</p>
-                      <div className="project-technologies">
-                        {project.technologies.map((tech, index) => (
-                          <span key={index} className="tech-badge">{tech}</span>
-                        ))}
-                      </div>
-                      <div className="project-links">
-                        {project.githubLink && (
-                          <a 
-                            href={project.githubLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="project-link github-link"
-                          >
-                            GitHub
-                          </a>
-                        )}
-                        {project.liveLink && (
-                          <a 
-                            href={project.liveLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="project-link live-link"
-                          >
-                            Live Demo
-                          </a>
-                        )}
-                      </div>
-                    </div>
+          <div className="section-header">
+            <h2>Featured Projects</h2>
+            <p>Here are some of my featured projects built with modern technologies</p>
+          </div>
+          
+          <div className="projects-grid">
+            {projects.map((project) => (
+              <div key={project._id} className="project-card">
+                <div className="project-image">
+                  <img 
+                    src={project.imageUrl} 
+                    alt={project.title}
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/300x200?text=Project+Image';
+                    }}
+                  />
+                </div>
+                <div className="project-content">
+                  <h3>{project.title}</h3>
+                  <p className="project-description">{project.description}</p>
+                  <div className="project-technologies">
+                    {project.technologies.map((tech, index) => (
+                      <span key={index} className="tech-badge">{tech}</span>
+                    ))}
                   </div>
-                ))}
+                  <div className="project-links">
+                    {project.githubLink && (
+                      <a 
+                        href={project.githubLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="project-link github-link"
+                      >
+                        GitHub
+                      </a>
+                    )}
+                    {project.liveLink && (
+                      <a 
+                        href={project.liveLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="project-link live-link"
+                      >
+                        Live Demo
+                      </a>
+                    )}
+                  </div>
+                </div>
               </div>
-            </>
-          )}
+            ))}
+          </div>
         </div>
       </section>
 
